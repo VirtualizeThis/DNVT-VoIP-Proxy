@@ -1,0 +1,28 @@
+void sync_line_state(int i) {
+    PHONE *phone = phones + i;
+    PHONE *connected_phone;
+    if (phone->playing_recording) {
+        int recording_number = phone->recording_number;
+        int recording_length = recording[recording_number].length;
+        uint32_t *data = recording[recording_number].data;
+        phone->recording_index %= recording_length;
+        struct timespec cur_time;
+        clock_gettime(CLOCK_REALTIME, &cur_time);
+        int packets_to_send = clock_diff_ms(&phone->last_tx, &cur_time);
+        if (packets_to_send > 3) {
+            packets_to_send = 3;
+            phone->last_tx = cur_time;
+        } else {
+            add_ms(&phone->last_tx, packets_to_send);
+        }
+        for (int r = 0; r < packets_to_send; r++) {
+            uint32_t raw_data = data[phone->recording_index++];
+            uint32_t swapped = ((raw_data>>24)&0xff) | // move byte 3 to byte 0
+                    ((raw_data<<8)&0xff0000) | // move byte 1 to byte 2
+                    ((raw_data>>8)&0xff00) | // move byte 2 to byte 1
+                    ((raw_data<<24)&0xff000000); // byte 0 to byte 3
+            queue_push(&phone->txd, swapped);
+        }
+    }
+    // rest of the code... 
+}

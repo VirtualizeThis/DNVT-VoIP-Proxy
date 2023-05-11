@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "gcc-build",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "main.c",
+<<<<<<< HEAD
+                "register_phone.c",
+                "phone_reg_utility.c",
+=======
+>>>>>>> 8f64e825f2ab7b65a73a38fb7c7abe4f9e20433d
+                "-lrt",
+                "-o",
+                "main",
+                "-Incurses",
+                "-lcurses",
+                "-lpthread",
+                "-ltinfo",
+<<<<<<< HEAD
+=======
+                "$(< pkg-config --libs --cflags libusb-1.0)",
+>>>>>>> 8f64e825f2ab7b65a73a38fb7c7abe4f9e20433d
+                "-lpj",
+                "-lpjsip",
+                "-lpjsip-ua",
+                "-lpjsip-simple",
+                "-lpjsua",
+                "-lpjmedia",
+                "-lpjmedia-codec",
+                "-lpjmedia-audiodev",
+                "-lpjnath",
+<<<<<<< HEAD
+                "-lpjlib-util",
+                "-I/usr/include/libusb-1.0",
+                "-lusb-1.0",
+                "-o",
+                "phone_reg_utility",
+                "-Incurses",
+                "-lcurses",
+                "-lpthread",
+                "-ltinfo",
+                "-lpj",
+                "-lpjsip",
+                "-lpjsip-ua",
+                "-lpjsip-simple",
+                "-lpjsua",
+                "-lpjmedia",
+                "-lpjmedia-codec",
+                "-lpjmedia-audiodev",
+                "-lpjnath",
+                "-lpjlib-util",
+                "-I/usr/include/libusb-1.0",
+                "-lusb-1.0"
+=======
+                "-lpjlib-util"
+>>>>>>> 8f64e825f2ab7b65a73a38fb7c7abe4f9e20433d
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        }
+    ]
+}
