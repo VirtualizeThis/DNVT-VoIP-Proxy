@@ -1,6 +1,6 @@
 #ifndef PHONE_SIP_REGISTRATION_TEST_H
 #define PHONE_SIP_REGISTRATION_TEST_H
 
-char* phone_sip_registration_test();
+char* main();
 
 #endif

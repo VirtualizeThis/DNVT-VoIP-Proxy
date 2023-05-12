@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "register_phone.h"
 
-char* phone_sip_registration_test()
+char* main()
 {
     char sip_uri[100];
     char sip_user[100];

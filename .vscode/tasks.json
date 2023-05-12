@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Main DNVT Proxy Executable",
-            "type": "shell",
-            "command": "gcc",
+            "label": "Main_DNVT_Proxy_Executable",
+            "type": "cppbuild",
+            "command": "/usr/bin/gcc",
             "args": [
                 "main.c",
                 "register_phone.c",
@@ -30,9 +30,9 @@
             ]
         },
         {
-            "label": "Phone Registration Test Utility",
-            "type": "shell",
-            "command": "gcc",
+            "label": "Phone_Registration_Test_Utility",
+            "type": "cppbuild",
+            "command": "/usr/bin/gcc",
             "args": [
                 "register_phone.c",
                 "phone_reg_utility.c",
@@ -56,7 +56,7 @@
                 "-I/usr/include/libusb-1.0",
                 "-lusb-1.0"
             ]
-        }
+        },
     ],
     "group": {
         "kind": "build",
