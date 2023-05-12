@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "register_phone.h"
 
-void phone_sip_registration_test()
+char* phone_sip_registration_test()
 {
     char sip_uri[100];
     char sip_user[100];
@@ -23,6 +23,11 @@ void phone_sip_registration_test()
     fgets(sip_password, sizeof(sip_password), stdin);
     sip_password[strcspn(sip_password, "\n")] = '\0';  // remove newline character
     
-   char* result = register_endpoint(sip_uri, sip_user, sip_password);
+    char* result = register_endpoint(sip_uri, sip_user, sip_password);
     printf("%s\n", result);
+    
+    char* dynamic_result = malloc(strlen(result) + 1);  // allocate memory for dynamic string
+    strcpy(dynamic_result, result);  // copy result to dynamic string
+    
+    return dynamic_result;
 }

@@ -485,10 +485,10 @@ void inital_phone_sip_registration()
 {
     for (int i = 1; i < 5; i++) {
         /*This is just a placeholder*/
-        const char *sip_uri = "sip:1@192.168.180.68";
+        char *sip_uri = "sip:1@192.168.180.68";
         char sip_user[10];
         sprintf(sip_user, "%d", i);
-        const char *sip_password = "dnvt";
+        char *sip_password = "dnvt";
 
         if (register_endpoint(sip_uri, sip_user, sip_password) == PJ_SUCCESS) {
             printf("Phone registration succeeded!\n");
