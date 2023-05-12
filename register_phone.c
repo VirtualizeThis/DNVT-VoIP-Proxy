@@ -24,14 +24,11 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
     pj_pool_factory pool_factory_one;
     pj_pool_t *pool_one;
 
-    // Create a caching pool
-    pj_caching_pool_init(&cache_pool_one, NULL, 1024);
+    pj_caching_pool_init(&cache_pool_one, NULL, 1024);  // Create a caching pool
 
-    // Create a pool factory using the caching pool
-    pool_factory_one.create_pool(&pool_factory_one, "my_pool", 1000, 1000, NULL);
+    pool_factory_one.create_pool(&pool_factory_one, "my_pool", 1000, 1000, NULL); // Create a pool factory using the caching pool
 
-    // Create a pool using the factory
-    pool_one = pj_pool_create(&pool_factory_one, "my_pool", 1000, 1000, NULL);
+    pool_one = pj_pool_create(&pool_factory_one, "my_pool", 1000, 1000, NULL); // Create a pool using the factory
 
     // Use the pool for your memory allocation needs
 

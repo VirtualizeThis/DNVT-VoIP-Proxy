@@ -1,17 +1,8 @@
 {
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
-        "assert.h": "c",
         "register_phone.h": "c",
-        "pjsua.h": "c",
-        "sip_inv.h": "c",
-        "sdp.h": "c",
-<<<<<<< HEAD
-        "err.h": "c",
-        "sip_module.h": "c"
-=======
-        "err.h": "c"
->>>>>>> 8f64e825f2ab7b65a73a38fb7c7abe4f9e20433d
+        "phone_reg_utility.h": "c"
     },
     "cmake.configureOnOpen": false
 }

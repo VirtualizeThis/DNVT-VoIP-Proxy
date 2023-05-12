@@ -15,16 +15,13 @@
 #include "../usb_structures.h"
 #include <pjsua-lib/pjsua.h>
 #include "register_phone.h"
-#include "call_control.h"
+/* #include "call_control.h" */
 
 #include <time.h>
 
+
 #define MFGR_ID 0xCAFE // given manufacturer ID 
 #define DEV_ID 0x6942  // given device ID
-
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE199309L
-#endif
 
 #define USB_CONTROL_VENDOR_MESSAGE 0x2<<4
 #define DNVT_REQUEST_STATUS 0x0
@@ -178,7 +175,6 @@ void add_ms(struct timespec *ts, int ms) {
     }
 }
 
-
 void sync_line_state(int i) {
     PHONE *phone = phones + i;
     PHONE *connected_phone;
@@ -188,12 +184,12 @@ void sync_line_state(int i) {
         uint32_t *data = recording[recording_number].data;
         phone->recording_index %= recording_length;
         struct timespec cur_clock;
-        clock_gettime(CLOCK_MONOTONIC_RAW, &cur_clock);
+        clock_gettime(_POSIX_MONOTONIC_CLOCK, &cur_clock);
         //sprintf(debug, "cur clock: %ld", cur_clock / CLOCKS_PER_SEC * 1000);
         int packets_to_send = clock_diff_ms(&phone->last_tx, &cur_clock);
         if (packets_to_send > 3) {
             packets_to_send = 3;
-            clock_gettime(CLOCK_MONOTONIC_RAW, &phone->last_tx);
+            clock_gettime(_POSIX_MONOTONIC_CLOCK, &phone->last_tx);
         } else {
             add_ms(&phone->last_tx, packets_to_send);
         }
@@ -224,7 +220,7 @@ void sync_line_state(int i) {
             }
             if (phone->state == phone_dial) {
                 phone->line_state = line_dial;
-                clock_gettime(CLOCK_MONOTONIC_RAW, &phone->last_tx);
+                clock_gettime(_POSIX_MONOTONIC_CLOCK, &phone->last_tx);
                 phone->playing_recording = true;
                 phone->recording_number = DIALTONE_RECORDING;
             }
@@ -252,14 +248,14 @@ void sync_line_state(int i) {
                 phones[dialed_line].pending_command = RING_COMMAND;
                 phones[dialed_line].connected_device = i;
                 phones[dialed_line].line_state = line_request_ring;
-                clock_gettime(CLOCK_MONOTONIC_RAW, &phones[dialed_line].last_tx);
+                clock_gettime(_POSIX_MONOTONIC_CLOCK, &phones[dialed_line].last_tx);
             }
             break;
         case line_awaiting_remote_ring:
             if (phone->connected_device == NOT_CONNECTED) {
                 fprintf(logfile, "line %d no longer connected, to busy\n", i);
                 phone->line_state = line_busy_signal;
-                clock_gettime(CLOCK_MONOTONIC_RAW, &phone->last_tx);
+                clock_gettime(_POSIX_MONOTONIC_CLOCK, &phone->last_tx);
                 phone->playing_recording = true;
                 phone->recording_number = BUSY_RECORDING;
                 return;
@@ -273,7 +269,7 @@ void sync_line_state(int i) {
             } else if (connected_phone->line_state == line_unreachable) {
                 fprintf(logfile, "line %d remote terminal unreachable, to busy\n", i);
                 phone->line_state = line_busy_signal;
-                clock_gettime(CLOCK_MONOTONIC_RAW, &phone->last_tx);
+                clock_gettime(_POSIX_MONOTONIC_CLOCK, &phone->last_tx);
                 phone->playing_recording = true;
                 phone->recording_number = BUSY_RECORDING;
             }
@@ -321,14 +317,14 @@ void sync_line_state(int i) {
                 phone->playing_recording = true;
                 phone->recording_number = DIALTONE_RECORDING;
                 phone->recording_index = 0;
-                clock_gettime(CLOCK_MONOTONIC_RAW, &phone->last_tx);
+                clock_gettime(_POSIX_MONOTONIC_CLOCK, &phone->last_tx);
                 return;
             }
             connected_phone = phones + phone->connected_device;
             if (connected_phone->line_state == line_unreachable) {
                 fprintf(logfile, "line %d connected phone unreachable 2, to busy\n", i);
                 phone->line_state = line_busy_signal;
-                clock_gettime(CLOCK_MONOTONIC_RAW, &connected_phone->last_tx);
+                clock_gettime(_POSIX_MONOTONIC_CLOCK, &connected_phone->last_tx);
                 phone->playing_recording = true;
                 phone->recording_number = BUSY_RECORDING;
             }
@@ -509,7 +505,9 @@ int main() {
     if (!logfile) {
         errx(1, "Logfile open failed\n");
     }
-    inital_phone_sip_registration(); // Register Phones with VoIP Server
+    /**/
+    /* inital_phone_sip_registration(); // Register Phones with VoIP Server
+    /**/
     fprintf(logfile, "DNVT Start\n");
     int init = libusb_init(NULL); // NULL is the default libusb_context
     int config;
