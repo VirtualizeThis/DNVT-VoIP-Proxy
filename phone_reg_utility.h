@@ -1,5 +1,5 @@
-#ifndef PHONE_SIP_REGISTRATION_TEST_H
-#define PHONE_SIP_REGISTRATION_TEST_H
+#ifndef MAIN_H
+#define MAIN_H
 
 char* main();
 

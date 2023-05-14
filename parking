@@ -1,0 +1,46 @@
+// Code for the call control section
+
+
+
+// Create SIP endpoint
+    pjsua_acc_id acc_id;
+    pjsua_transport_id transport_id;
+    pjsip_endpoint *sip_endpoint;
+
+    // Create memory pool
+    pj_pool_t *pool_one;
+
+    // Initialize caching pool
+    pj_caching_pool cache_pool_one;
+    pj_caching_pool_init(&cache_pool_one, NULL, 1024);
+
+    // Create a pool using the caching pool
+    pj_pool_create(&cache_pool_one.factory, "my_pool", 1000, 1000, &pool_one);
+
+
+
+    // Create endpoint configuration
+    pjsip_endpoint_cfg endpoint_cfg;
+    pjsip_endpoint_cfg_default(&endpoint_cfg);  // Initialize with default settings
+
+    // Set pool to use for endpoint_cfg
+    endpoint_cfg.pool = pool_one;
+
+    // Create PJSIP endpoint
+    pjsip_endpoint *endpoint;
+    status = pjsip_endpt_create(&endpoint_cfg, NULL, &endpoint);
+    if (status != PJ_SUCCESS) { 
+        pj_shutdown();
+        return strdup("Error creating PJSIP endpoint"); // allocate and return a duplicate string
+}
+
+    // Create SIP transport
+    pjsip_transport* transport;
+    pjsua_transport_config transport_cfg;
+    pjsua_transport_config_default(&transport_cfg);
+    status = pjsip_udp_transport_start(endpoint, NULL, NULL, 1, &transport);
+    if (status != PJ_SUCCESS) {
+        pjsip_endpt_destroy(endpoint);
+        pj_shutdown();
+        return strdup("Error creating SIP transport");
+    }

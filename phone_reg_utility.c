@@ -10,7 +10,10 @@ char* main()
     char sip_uri[100];
     char sip_user[100];
     char sip_password[100];
-    
+    strcpy(sip_uri, "192.168.180.68");
+    strcpy(sip_user, "101");
+    strcpy(sip_password, "password");
+    /*
     printf("Enter SIP URI: ");
     fgets(sip_uri, sizeof(sip_uri), stdin);
     sip_uri[strcspn(sip_uri, "\n")] = '\0';  // remove newline character
@@ -22,8 +25,9 @@ char* main()
     printf("Enter SIP password: ");
     fgets(sip_password, sizeof(sip_password), stdin);
     sip_password[strcspn(sip_password, "\n")] = '\0';  // remove newline character
-    
-    char* result = register_endpoint(sip_uri, sip_user, sip_password);
+    */
+
+    char* result = register_endpoint(sip_user, sip_password, sip_uri);
     printf("%s\n", result);
     
     char* dynamic_result = malloc(strlen(result) + 1);  // allocate memory for dynamic string
