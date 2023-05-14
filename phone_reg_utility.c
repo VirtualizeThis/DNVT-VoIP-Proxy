@@ -27,11 +27,7 @@ char* main()
     sip_password[strcspn(sip_password, "\n")] = '\0';  // remove newline character
     */
 
-    char* result = register_endpoint(sip_user, sip_password, sip_uri);
-    printf("%s\n", result);
+    printf("%s", register_endpoint(sip_user, sip_password, sip_uri));
     
-    char* dynamic_result = malloc(strlen(result) + 1);  // allocate memory for dynamic string
-    strcpy(dynamic_result, result);  // copy result to dynamic string
-    
-    return dynamic_result;
+    return 0;
 }
