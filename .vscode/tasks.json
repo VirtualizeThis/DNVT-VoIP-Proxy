@@ -61,6 +61,35 @@
                 "-lusb-1.0"
             ]
         },
+        {
+            "label": "test",
+            "type": "cppbuild",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "test.c",
+                "-lrt",
+                "-g",
+                "-o",
+                "test",
+                "-Incurses",
+                "-lcurses",
+                "-lpthread",
+                "-ltinfo",
+                "-lpj",
+                "-lpjsip",
+                "-lpjsip-ua",
+                "-lpjsip-simple",
+                "-lpjsua",
+                "-lpjsua2",
+                "-lpjmedia",
+                "-lpjmedia-codec",
+                "-lpjmedia-audiodev",
+                "-lpjnath",
+                "-lpjlib-util",
+                "-I/usr/include/libusb-1.0",
+                "-lusb-1.0"
+            ]
+        },
     ],
     "group": {
         "kind": "build",
