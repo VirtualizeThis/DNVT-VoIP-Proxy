@@ -39,7 +39,9 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
     pjsip_endpoint *endpt_1;
     pj_caching_pool cp;
 
-    // Initialize PJSIP library
+/********************************************************************/
+/*        This is the correct order to start pj_init()              */
+/********************************************************************/
     status = pj_init();
     if (status != PJ_SUCCESS) {
          return "Error initializing PJSIP library"; // allocate and return a duplicate string
@@ -52,6 +54,25 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
         if (status != PJ_SUCCESS) {
          return "Error"; // allocate and return a duplicate string
     }
+/********************************************************************/
+/*        This is the correct order to start pjsua_init()           */
+/********************************************************************/
+    status = pjsua_create();
+        if (status != PJ_SUCCESS) {
+        return "Error"; // allocate and return a duplicate string
+    }
+
+    status = pjsua_init(&cfg, &log_cfg, &media_cfg);
+        if (status != PJ_SUCCESS) {
+        return "Error"; // allocate and return a duplicate string
+        }
+
+    status = pjsua_start();
+        if (status != PJ_SUCCESS) {
+        return "Error"; // allocate and return a duplicate string
+    }
+
+/********************************************************************/
 
     pj_caching_pool_init(&cp, &pj_pool_factory_default_policy, 10240);
     
@@ -102,32 +123,7 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
     acc_cfg.id = pj_str(sip_id);
     char reg_uri[PJSIP_MAX_URL_SIZE];
     pj_ansi_sprintf(reg_uri, "sip:%s", sip_uri);
-    /************************************************/
-    /*
-    cfg.max_calls = 16; // Set the maximum number of simultaneous calls
-    cfg.thread_cnt = 0; // Set the number of worker threads // Automatically determine
-    cfg.user_agent = pj_str("My SIP Client"); // Set the user agent configuration
 
-
-    
-    }
-      */  
-/************************************************************/
-/*************This is the correct order to start pjsua_init()**************/
-    status = pjsua_create();
-        if (status != PJ_SUCCESS) {
-        return "Error"; // allocate and return a duplicate string
-    }
-    status = pjsua_start();
-        if (status != PJ_SUCCESS) {
-        return "Error"; // allocate and return a duplicate string
-    }
-    status = pjsua_init(&cfg, &log_cfg, &media_cfg);
-        if (status != PJ_SUCCESS) {
-        return "Error"; // allocate and return a duplicate string
-        }
-
-    /***********************************************/
     // Define a variable to store the transport ID
     acc_cfg.reg_uri = pj_str(reg_uri);
     acc_cfg.cred_count = 1;
@@ -137,9 +133,35 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
     acc_cfg.cred_info[0].data_type = 1;
     acc_cfg.cred_info[0].data = pj_str(password);
     acc_cfg.register_on_acc_add = PJ_FALSE;
-    
 
-    /**********************************************/
+/******************************************************************/
+    
+    pjsua_state state = pjsua_get_state();
+
+    const char* stateStr;
+    switch (state) {
+        case PJSUA_STATE_NULL:
+            stateStr = "NULL";
+            break;
+        case PJSUA_STATE_CREATED:
+            stateStr = "CREATED";
+            break;
+        case PJSUA_STATE_INIT:
+            stateStr = "INIT";
+            break;
+        case PJSUA_STATE_STARTING:
+            stateStr = "STARTING";
+            break;
+        case PJSUA_STATE_RUNNING:
+            stateStr = "RUNNING";
+            break;
+        default:
+            stateStr = "UNKNOWN";
+}
+
+    printf("PJSUA state: %s\n", stateStr);
+
+/************************************************************************/
 
     status = pjsua_acc_add(&acc_cfg, 0, &acc_id_var);
     if (status != PJ_SUCCESS) {

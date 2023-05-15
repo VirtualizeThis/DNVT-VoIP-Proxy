@@ -1,3 +1,4 @@
+/**/
 #ifndef REGISTER_ENDPOINT_H
 #define REGISTER_ENDPOINT_H
 
