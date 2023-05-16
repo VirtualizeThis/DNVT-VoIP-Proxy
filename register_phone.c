@@ -19,21 +19,21 @@
 #include <pjsip/sip_autoconf.h>
 #include <pjsip/sip_config.h>
 #include <pjsip/sip_types.h>
+#include <errno.h>
+
 
 
 // function to register an endpoint with a SIP server
 // Accepts username, password, and SIP URI
 // Returns a success or failure string
-char* register_endpoint(char* username, char* password, char* sip_uri) {
- 
+char* register_endpoint(const char* username, char* password, char* sip_uri) {
+
     pjsua_config cfg;
     pjsua_config_default(&cfg);
     pjsua_logging_config log_cfg;
     pjsua_logging_config_default(&log_cfg);
     pjsua_media_config media_cfg;
     pjsua_media_config_default(&media_cfg);
-    pjsua_transport_config trans_cfg;
-    pjsua_transport_config_default(&trans_cfg);
 
     pj_status_t status;
     pjsip_endpoint *endpt_1;
@@ -50,10 +50,6 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
         if (status != PJ_SUCCESS) {
          return "Error"; // allocate and return a duplicate string
     }
-    status = pjlib_util_init();
-        if (status != PJ_SUCCESS) {
-         return "Error"; // allocate and return a duplicate string
-    }
 /********************************************************************/
 /*        This is the correct order to start pjsua_init()           */
 /********************************************************************/
@@ -62,33 +58,38 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
         return "Error"; // allocate and return a duplicate string
     }
 
+    cfg.thread_cnt = 4;
+
     status = pjsua_init(&cfg, &log_cfg, &media_cfg);
         if (status != PJ_SUCCESS) {
         return "Error"; // allocate and return a duplicate string
         }
-
-    status = pjsua_start();
-        if (status != PJ_SUCCESS) {
-        return "Error"; // allocate and return a duplicate string
-    }
-
 /********************************************************************/
-
+/*                Initialize network subsystem                      */
+/********************************************************************/
+    status = pjlib_util_init();
+        if (status != PJ_SUCCESS) {
+         return "Error"; // allocate and return a duplicate string
+    }
+/********************************************************************/
+/*              Create PJSIP Endpoint                               */
+/********************************************************************/
     pj_caching_pool_init(&cp, &pj_pool_factory_default_policy, 10240);
     
-    // Create PJSIP endpoint
     status = pjsip_endpt_create(&cp.factory, NULL, &endpt_1);
     if (status != PJ_SUCCESS) {
         pjsip_endpt_destroy(endpt_1);
         pj_shutdown();
         return "Error creating SIP endpoint";
 }
-
-    // Create SIP transport
+/********************************************************************/
+/*              Create SIP transport                               */
+/********************************************************************/
     pjsip_transport* transport;
     pjsua_transport_config transport_cfg;
     pjsua_transport_config_default(&transport_cfg);
-    status = pjsip_udp_transport_start(endpt_1, NULL, NULL, 1, &transport);
+    transport_cfg.port = 5060;
+    status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transport_cfg, NULL); // This fixed the pjsua_acc_add bug!
     if (status != PJ_SUCCESS) {
         pjsip_endpt_destroy(endpt_1);
         pj_shutdown();
@@ -102,7 +103,7 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
     }
 
 
-    // Validate and sanitize username
+    // Validate and sanitize username, not pj_username
     if (username == NULL || strlen(username) == 0 || strcspn(username, ";:,") != strlen(username)) {
         pj_shutdown();
         return "Invalid username";
@@ -116,6 +117,7 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
 
     // Create SIP account
     pjsua_acc_id acc_id_var;
+    acc_id_var = 5;
     pjsua_acc_config acc_cfg;
     pjsua_acc_config_default(&acc_cfg);
     char sip_id[PJSIP_MAX_URL_SIZE];
@@ -124,18 +126,8 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
     char reg_uri[PJSIP_MAX_URL_SIZE];
     pj_ansi_sprintf(reg_uri, "sip:%s", sip_uri);
 
-    // Define a variable to store the transport ID
-    acc_cfg.reg_uri = pj_str(reg_uri);
-    acc_cfg.cred_count = 1;
-    acc_cfg.cred_info[0].realm = pj_str("domain.com");
-    acc_cfg.cred_info[0].scheme = pj_str("digest");
-    acc_cfg.cred_info[0].username = pj_str(username);
-    acc_cfg.cred_info[0].data_type = 1;
-    acc_cfg.cred_info[0].data = pj_str(password);
-    acc_cfg.register_on_acc_add = PJ_FALSE;
-
 /******************************************************************/
-    
+
     pjsua_state state = pjsua_get_state();
 
     const char* stateStr;
@@ -161,13 +153,54 @@ char* register_endpoint(char* username, char* password, char* sip_uri) {
 
     printf("PJSUA state: %s\n", stateStr);
 
+/********************************************************************/
+/********************************************************************/
+/*        First get username, password to correct pj_ptr_t struct   */
+/********************************************************************/
+
+    pj_str_t pj_username = pj_str((char*)username);
+    pj_str_t pj_password = pj_str((char*)password);
+    pj_str_t pj_basic = pj_str((char*)"basic");
+    pj_str_t pj_realm = pj_str((char*)"ddkjr.local");
+
+/********************************************************************/
+
+    // Define a variable to store the account cfg
+    acc_cfg.reg_uri = pj_str(reg_uri);
+    acc_cfg.cred_count = 1;
+    acc_cfg.cred_info[0].realm = pj_realm;
+    acc_cfg.cred_info[0].scheme = pj_basic;
+    acc_cfg.cred_info[0].username = pj_username;
+    acc_cfg.cred_info[0].data_type = 1;
+    acc_cfg.cred_info[0].data = pj_password;
+    
+/************************************************************************/
+/*                  Hunt for acc_cfg void issue                         */
+/************************************************************************/
+    const char* customString = "Some custom string data";
+    acc_cfg.user_data = (void*)customString; // Nope, not here
+
+    /* acc_cfg.register_on_acc_add = PJ_FALSE; */
+    
+    /* status = pjsua_acc_add_local(&transport, PJ_TRUE, &acc_id_var); */
+
+    printf("Error: %s\n", strerror(errno));
+
 /************************************************************************/
 
-    status = pjsua_acc_add(&acc_cfg, 0, &acc_id_var);
+
+
+    status = pjsua_acc_add(&acc_cfg, PJ_TRUE, &acc_id_var);
+    printf("Error: %s\n", strerror(errno));
     if (status != PJ_SUCCESS) {
         pjsua_acc_del(acc_id_var);
         pj_shutdown();
         return "Error adding SIP account";
+    }
+
+    status = pjsua_start();
+        if (status != PJ_SUCCESS) {
+        return "Error"; // allocate and return a duplicate string
     }
 
     // Register endpoint with SIP server
