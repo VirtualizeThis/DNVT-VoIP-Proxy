@@ -2,6 +2,6 @@
 #ifndef REGISTER_ENDPOINT_H
 #define REGISTER_ENDPOINT_H
 
-char* register_endpoint(const char* username, char* password, char* sip_uri);
+int register_endpoint(char* username, char* password, char* sip_uri, int dialed_number, char* sip_realm);
 
 #endif // REGISTER_ENDPOINT_H
