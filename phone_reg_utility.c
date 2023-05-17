@@ -26,8 +26,7 @@ char* main()
     printf("Enter SIP password: ");
     fgets(sip_password, sizeof(sip_password), stdin);
     sip_password[strcspn(sip_password, "\n")] = '\0';  // remove newline character
-    */
-
+*/
     printf("%s", register_endpoint(sip_user, sip_password, sip_uri));
     
     return 0;
