@@ -59,6 +59,7 @@ void create_profile_sip() {
     sip_realm[strcspn(sip_realm, "\n")] = '\0';
     */ 
    Sip_User_Profile.dialed_number = 0;
+   clear_screen();
 }
 /********************************************************************************/
 /*                      VoIP Proxy Process Launch                               */
@@ -79,7 +80,7 @@ void create_profile_sip() {
 /********************************************************************************/
 static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
 {
-    pj_status_t status;
+   pj_status_t status;
     status = pj_log_init();
     pj_log_set_level(5); // Set max log level
     
@@ -94,9 +95,31 @@ static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_r
 
     /* Automatically answer incoming calls with 200/OK */
     pjsua_call_answer(call_id, 200, NULL, NULL);
+
+    // Connect call to system default audio speakers
+    pjsua_conf_connect(ci.conf_slot, 0);
+    pjsua_conf_connect(0, ci.conf_slot);
 }
 /********************************************************************/
-/* VoIP Proxy Process -  Callback called by the library when call's state has changed     */
+/* VoIP Proxy Process -  Callback called by the library when call's media state has changed */
+/********************************************************************/
+static void on_call_media_state(pjsua_call_id call_id)
+{
+pjsua_call_info ci;
+
+    pjsua_call_get_info(call_id, &ci);
+
+    if (ci.media_status == PJSUA_CALL_MEDIA_ACTIVE) {
+        // When media is active, connect call to sound device.
+        pjsua_conf_connect(ci.conf_slot, 0);
+        pjsua_conf_connect(0, ci.conf_slot);
+
+        // Create an audio channel back to the source of the call using the system microphone
+        pjsua_conf_connect(ci.conf_slot, pjsua_call_get_conf_port(call_id));
+    }
+}
+/********************************************************************/
+/* VoIP Proxy Process -  on_call_stste */
 /********************************************************************/
 static void on_call_state(pjsua_call_id call_id, pjsip_event *e)
 {
@@ -108,22 +131,16 @@ static void on_call_state(pjsua_call_id call_id, pjsip_event *e)
     PJ_LOG(3,(THIS_FILE, "Call %d state=%.*s", call_id,
                          (int)ci.state_text.slen,
                          ci.state_text.ptr));
-}
-/********************************************************************/
-/* VoIP Proxy Process -  Callback called by the library when call's media state has changed */
-/********************************************************************/
-static void on_call_media_state(pjsua_call_id call_id)
-{
-    pjsua_call_info ci;
 
-    pjsua_call_get_info(call_id, &ci);
-
-    if (ci.media_status == PJSUA_CALL_MEDIA_ACTIVE) {
-        // When media is active, connect call to sound device.
-        pjsua_conf_connect(ci.conf_slot, 0);
-        pjsua_conf_connect(0, ci.conf_slot);
+    if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
+        // Call has ended, run on_call_state() function
+        on_call_state(call_id, NULL);
     }
 }
+
+
+
+
 /********************************************************************/
 /* VoIP Proxy Process -  Display error and exit application */
 /********************************************************************/
@@ -207,12 +224,6 @@ void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is numbe
         status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
         if (status != PJ_SUCCESS) error_exit("Error adding account", status);
     }
-
-    printf("Press ENTER key to Continue\n");  
-    getchar();  
-
-    /* Destroy pjsua */
-    pjsua_destroy();
     return 0;
 }
 /********************************************************************************/
@@ -220,13 +231,13 @@ void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is numbe
 /********************************************************************************/
 void* voip_main()
 {
-    bool quit = false;
+/********************************************************************************/
+/*                      Menu Select - Basic or VoIP                             */
+/********************************************************************************/    bool quit = false;
     int MenuChoice;
     while (!quit) {
     voip_main_ui();
-/********************************************************************************/
-/*                      Menu Select - Basic or VoIP                             */
-/********************************************************************************/
+
     scanf("%d", &MenuChoice);
 
     switch (MenuChoice) {
@@ -252,5 +263,6 @@ void* voip_main()
     while ((getchar()) != '\n');
     }
 /********************************************************************************/
+    pjsua_destroy();
 return 0;
 }

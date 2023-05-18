@@ -6,7 +6,9 @@
 struct Sip_Profile_Args Sip_User_Profile;
 
 /***************************************************************/
-
+void clear_screen() {
+    printf("\033[2J\033[H");
+}
 /***************************************************************/
 /*                      Main Menu                              */
 /***************************************************************/
@@ -54,11 +56,10 @@ int* main()
     while (!quit) {
     utility_main_ui();
     scanf("%d", &MenuChoice);
-
     switch (MenuChoice) {
         case 1:
             printf("Register Phone to Profile and Dial.\n");
-            create_profile_sip();
+            Get_SIP_User_Profile();
             break;
         case 2:
             printf("Quitting\n");
