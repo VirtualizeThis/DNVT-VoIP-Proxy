@@ -3,32 +3,25 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "libusb.h"
-#include <errno.h>
+#include <libusb.h>
 #include <err.h>
 #include <ncurses.h>
-#include "curses.h"
 #include <pthread.h>
 #include <sys/queue.h>
 #include <assert.h>
 
 #include "../usb_structures.h"
-#include <pjsua-lib/pjsua.h>
-#include "register_phone.h"
-/* #include "call_control.h" */
-
-#include <time.h>
-
+#include "voip_main_menu.h"
 
 #define MFGR_ID 0xCAFE // given manufacturer ID 
 #define DEV_ID 0x6942  // given device ID
+
+
 
 #define USB_CONTROL_VENDOR_MESSAGE 0x2<<4
 #define DNVT_REQUEST_STATUS 0x0
 #define DNVT_REBOOT_FIRMWARE 0xff
 #define SETUP_INPUT 0x1 << 7
-
-// Note Pending
 
 typedef struct {
     uint32_t data[20];
@@ -97,7 +90,17 @@ unsigned char dev_serials[MAX_SWITCHES][20];
 int open_devices = 0;
 
 bool thread_run = true;
-
+/***************************************************************/
+/*                      Start Menu*/
+/***************************************************************/
+void startMenu() {
+    printf("Choose Mode:\n");
+    printf("1. Standard Mode\n");
+    printf("2. VoIP Proxy Mode\n");
+    printf("Please enter your choice: ");
+    fflush(stdout);
+}
+/***************************************************************/
 
 // apparently C doesn't have an STL queue, so...
 void init_queue(QUEUE *q) {
@@ -174,6 +177,7 @@ void add_ms(struct timespec *ts, int ms) {
         ts->tv_sec++;
     }
 }
+
 
 void sync_line_state(int i) {
     PHONE *phone = phones + i;
@@ -472,31 +476,6 @@ void open_recording(char *path, int index) {
     size_t read_bytes = fread(recording[index].data, sizeof(uint32_t), stat.st_size/4, fp);
     printf("recording %s read %ld bytes, first word %08x\n", path, read_bytes, recording[index].data[0]);
 }
-    //
-    //
-    // Register Phone w/ SIP using PJSIP function created in register_phone.h
-    // This should quickly register 4 phones with the SIP using username 1, 2, 3, 4
-
-void inital_phone_sip_registration()
-{
-    for (int i = 1; i < 5; i++) {
-        /*This is just a placeholder*/
-        char *sip_uri = "sip:1@192.168.180.68";
-        char sip_user[10];
-        sprintf(sip_user, "%d", i);
-        char *sip_password = "dnvt";
-
-        if (register_endpoint(sip_uri, sip_user, sip_password) == PJ_SUCCESS) {
-            printf("Phone registration succeeded!\n");
-        } else {
-            printf("Phone registration failed!\n");
-        }
-    }
-}
-    //
-    //
-    //
-    //End of Phone Reg Code
 
 
 int main() {
@@ -505,9 +484,7 @@ int main() {
     if (!logfile) {
         errx(1, "Logfile open failed\n");
     }
-    /**/
-    /* inital_phone_sip_registration(); // Register Phones with VoIP Server
-    /**/
+
     fprintf(logfile, "DNVT Start\n");
     int init = libusb_init(NULL); // NULL is the default libusb_context
     int config;
@@ -558,6 +535,7 @@ int main() {
         //printf("claimed interface 0\n");
         //printf("sizeof device packet %ld\n", sizeof(DEVICE_PACKET));
     }
+    
     //printf("phone states: %x\n", host_packet.phone_states);
     // now you can use libusb_bulk_transfer to send raw data to the device
     bool quit = false;
@@ -569,6 +547,28 @@ int main() {
     pthread_t th1;
     pthread_create(&th1, NULL, usb_worker, (void*) NULL);
     while (!quit && thread_run) {			/* Start curses mode 		  */
+/********************************************************************************/
+/*                      Menu Select - Basic or VoIP                             */
+/********************************************************************************/
+    int startMenuchoice;
+    startMenu();
+    scanf("%d", &startMenuchoice);
+        switch (startMenuchoice) {
+        case 1:
+            printf("Normal Mode Selected\n");
+            // Call the function for registering the phone to the profile
+            break;
+        case 2:
+            printf("VoIP Proxy Bridge Mode Starting..............\n");
+            voip_main_menu(); // Call VoIP Main Menu Function
+            quit = true;
+            break;
+        default:
+            printf("Invalid choice. Please try again.\n");
+            break;
+    }
+    while ((getchar()) != '\n');
+/********************************************************************************/
         int row, col;
         getmaxyx(stdscr,row,col);
         clear();

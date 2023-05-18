@@ -1,27 +1,4 @@
-/*
- * This is a very simple but fully featured SIP user agent, with the 
- * following capabilities:
- *  - SIP registration
- *  - Making and receiving call
- *  - Audio/media to sound device.
- *
- * Usage:
- *  - To make outgoing call, start simple_pjsua with the URL of remote
- *    destination to contact.
- *    E.g.:
- *       simpleua sip:user@remote
- *
- *  - Incoming calls will automatically be answered with 200.
- *
- * This program will quit once it has completed a single call.
- */
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <pjsua-lib/pjsua.h>
+/* */
 #include "register_phone.h"
 
 #define THIS_FILE       "APP"
@@ -31,6 +8,9 @@
 /*   Accepts username, password, and SIP URI                        */
 /*   Returns a success or failure                                   */
 /********************************************************************/
+/***************************************************************/
+
+struct Sip_Profile_Args Sip_User_Profile;
 
 /********************************************************************/
 /* Callback called by the library upon receiving incoming call      */
@@ -90,10 +70,10 @@ static void error_exit(const char *title, pj_status_t status)
 
 /*
  * main()
- *
+ *char* username, char* password, char* sip_uri, int dialed_number, char* sip_realm
  * sip_uri[1] may contain URL to call.
- */
-int register_endpoint(char* username, char* password, char* sip_uri, int dialed_number, char* sip_realm) //dialed_number is number to call?, sip_uri is URI
+ */ 
+void register_endpoint(struct Sip_Profile_Args Sip_Profile) //dialed_number is number to call?, sip_uri is URI
 {
     pjsua_acc_id acc_id;
     pj_status_t status;
@@ -103,10 +83,8 @@ int register_endpoint(char* username, char* password, char* sip_uri, int dialed_
     if (status != PJ_SUCCESS) error_exit("Error in pjsua_create()", status);
 
     /* If argument is specified, it's got to be a valid SIP URL */
-    if (dialed_number > 1) {
+    if (Sip_Profile.dialed_number > 1) {
         // Create a pj_str_t object from the SIP URI
-        status = pjsua_verify_url(sip_uri);
-        if (status != PJ_SUCCESS) error_exit("Invalid URL in sip_uri", status);
     }
 
     /* Init pjsua */
@@ -148,19 +126,19 @@ int register_endpoint(char* username, char* password, char* sip_uri, int dialed_
 
         char cfg_id_build[100];
         strcpy(cfg_id_build, "sip:");
-        strcat(cfg_id_build, username);
+        strcat(cfg_id_build, Sip_Profile.sip_user);
         strcat(cfg_id_build, "@");
-        strcat(cfg_id_build, sip_uri);
+        strcat(cfg_id_build, Sip_Profile.sip_uri);
         cfg.id = pj_str(cfg_id_build);
         cfg.reg_uri = pj_str(cfg_id_build);
 
 
         cfg.cred_count = 1;
-        cfg.cred_info[0].realm = pj_str(sip_realm);
+        cfg.cred_info[0].realm = pj_str(Sip_Profile.sip_realm);
         cfg.cred_info[0].scheme = pj_str("basic");
-        cfg.cred_info[0].username = pj_str(username);
+        cfg.cred_info[0].username = pj_str(Sip_Profile.sip_user);
         cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
-        cfg.cred_info[0].data = pj_str(password);
+        cfg.cred_info[0].data = pj_str(Sip_User_Profile.sip_password);
 
         status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
         if (status != PJ_SUCCESS) error_exit("Error adding account", status);
@@ -171,6 +149,4 @@ int register_endpoint(char* username, char* password, char* sip_uri, int dialed_
 
     /* Destroy pjsua */
     pjsua_destroy();
-
-    return 0;
 }
