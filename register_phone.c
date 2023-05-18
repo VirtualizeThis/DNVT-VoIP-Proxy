@@ -10,7 +10,7 @@
 /********************************************************************/
 /***************************************************************/
 
-struct Sip_Profile_Args Sip_User_Profile;
+extern struct Sip_Profile_Args Sip_User_Profile;
 
 /********************************************************************/
 /* Callback called by the library upon receiving incoming call      */
@@ -73,7 +73,7 @@ static void error_exit(const char *title, pj_status_t status)
  *char* username, char* password, char* sip_uri, int dialed_number, char* sip_realm
  * sip_uri[1] may contain URL to call.
  */ 
-void register_endpoint(struct Sip_Profile_Args Sip_Profile) //dialed_number is number to call?, sip_uri is URI
+void register_and_dial_func(struct Sip_Profile_Args Sip_Profile) //dialed_number is number to call?, sip_uri is URI
 {
     pjsua_acc_id acc_id;
     pj_status_t status;

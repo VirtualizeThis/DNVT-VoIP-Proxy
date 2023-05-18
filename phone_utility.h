@@ -9,6 +9,10 @@
 #include <unistd.h>
 #include <pjsua-lib/pjsua.h>
 #include "register_phone.h"
+#include "sip_profile.h"
+#include <pthread.h>
+#include <stdbool.h>
+
 
 int* main();
 

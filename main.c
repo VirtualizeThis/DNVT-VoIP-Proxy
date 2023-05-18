@@ -11,7 +11,8 @@
 #include <assert.h>
 
 #include "../usb_structures.h"
-#include "voip_main_menu.h"
+#include "voip_proxy.h"
+
 
 #define MFGR_ID 0xCAFE // given manufacturer ID 
 #define DEV_ID 0x6942  // given device ID
@@ -98,10 +99,13 @@ void startMenu() {
     printf("1. Standard Mode\n");
     printf("2. VoIP Proxy Mode\n");
     printf("Please enter your choice: ");
-    fflush(stdout);
 }
 /***************************************************************/
+/*                      Helpful Functions                 */
+/***************************************************************/
 
+
+/***************************************************************/
 // apparently C doesn't have an STL queue, so...
 void init_queue(QUEUE *q) {
     q->size = 0;
@@ -552,7 +556,7 @@ int main() {
 /********************************************************************************/
     int startMenuchoice;
     startMenu();
-    scanf("%d", &startMenuchoice);
+     scanf("%d", &startMenuchoice);
         switch (startMenuchoice) {
         case 1:
             printf("Normal Mode Selected\n");
@@ -560,7 +564,7 @@ int main() {
             break;
         case 2:
             printf("VoIP Proxy Bridge Mode Starting..............\n");
-            voip_main_menu(); // Call VoIP Main Menu Function
+            voip_main(); // Call VoIP Main Menu Function
             quit = true;
             break;
         default:

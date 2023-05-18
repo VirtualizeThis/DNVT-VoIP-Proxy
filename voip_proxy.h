@@ -1,7 +1,4 @@
 /**/
-#ifndef VOIP_MAIN_MENU_H
-#define VOIP_MAIN_MENU_H
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -12,6 +9,10 @@
 #include <pthread.h>
 #include <stdbool.h>
 
-void* voip_main_menu();
+
+#ifndef VOIP_PROXY_H
+#define VOIP_PROXY_H
+
+void* voip_main();
 
 #endif
