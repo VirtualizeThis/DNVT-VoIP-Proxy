@@ -10,6 +10,7 @@ struct Sip_Profile_Args Sip_User_Profile;
 /***************************************************************/
 void voip_main_ui() {
         clear();
+        echo();
         mvprintw(0, 0, "Menu:");
         mvprintw(1, 0, "1. Register Phone to Profile");
         mvprintw(2, 0, "2. Unregister Phone from Profile");
@@ -249,6 +250,7 @@ void* voip_main()
             refresh();
             break;
     }
+    noecho();
     while ((getchar()) != '\n');
     }
 /********************************************************************************/

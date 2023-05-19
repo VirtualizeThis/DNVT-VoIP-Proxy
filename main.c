@@ -98,6 +98,7 @@ void startMenu() {
     int startMenuchoice;
     bool quit = false;
     clear();
+    echo();
     mvaddstr(0, 0, "Choose Mode:");
     mvprintw(1, 0, "1. Standard Mode");
     mvprintw(2, 0, "2. VoIP Proxy Mode");
@@ -107,10 +108,12 @@ void startMenu() {
         switch (startMenuchoice) {
         case 1:
             mvprintw(4, 0, "Normal Mode Selected\n");
+            noecho();
             // Call the function for registering the phone to the profile
             break;
         case 2:
             mvprintw(4, 0, "VoIP Proxy Bridge Mode Starting..............\n");
+            noecho();
             voip_main(); // Call VoIP Main Menu Function
             quit = true;
             break;
