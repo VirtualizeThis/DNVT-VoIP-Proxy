@@ -8,6 +8,7 @@
 #include <pjsua-lib/pjsua.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <ncurses.h>
 
 
 #ifndef VOIP_PROXY_H

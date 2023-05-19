@@ -95,10 +95,29 @@ bool thread_run = true;
 /*                      Start Menu*/
 /***************************************************************/
 void startMenu() {
-    printf("Choose Mode:\n");
-    printf("1. Standard Mode\n");
-    printf("2. VoIP Proxy Mode\n");
-    printf("Please enter your choice: ");
+    int startMenuchoice;
+    bool quit = false;
+    clear();
+    mvaddstr(0, 0, "Choose Mode:");
+    mvprintw(1, 0, "1. Standard Mode");
+    mvprintw(2, 0, "2. VoIP Proxy Mode");
+    mvprintw(3, 0, "Please enter your choice: ");
+    flushinp();
+    scanw("%d", &startMenuchoice);
+        switch (startMenuchoice) {
+        case 1:
+            mvprintw(4, 0, "Normal Mode Selected\n");
+            // Call the function for registering the phone to the profile
+            break;
+        case 2:
+            mvprintw(4, 0, "VoIP Proxy Bridge Mode Starting..............\n");
+            voip_main(); // Call VoIP Main Menu Function
+            quit = true;
+            break;
+        default:
+            mvprintw(4, 0, "Invalid choice. Please try again.\n");
+            break;
+    }
 }
 /***************************************************************/
 /*                      Helpful Functions                 */
@@ -547,32 +566,12 @@ int main() {
     raw();
     keypad(stdscr, true);
     noecho();
-    timeout(100);
+    timeout(10000);
     pthread_t th1;
     pthread_create(&th1, NULL, usb_worker, (void*) NULL);
     while (!quit && thread_run) {			/* Start curses mode 		  */
-/********************************************************************************/
-/*                      Menu Select - Basic or VoIP                             */
-/********************************************************************************/
-    int startMenuchoice;
-    startMenu();
-     scanf("%d", &startMenuchoice);
-        switch (startMenuchoice) {
-        case 1:
-            printf("Normal Mode Selected\n");
-            // Call the function for registering the phone to the profile
-            break;
-        case 2:
-            printf("VoIP Proxy Bridge Mode Starting..............\n");
-            voip_main(); // Call VoIP Main Menu Function
-            quit = true;
-            break;
-        default:
-            printf("Invalid choice. Please try again.\n");
-            break;
-    }
+    startMenu(); /*          Menu Select - Basic or VoIP                */
     while ((getchar()) != '\n');
-/********************************************************************************/
         int row, col;
         getmaxyx(stdscr,row,col);
         clear();

@@ -6,60 +6,45 @@
 struct Sip_Profile_Args Sip_User_Profile;
 
 /***************************************************************/
-void clear_screen() {
-    printf("\033[2J\033[H");
-}
-/***************************************************************/
-
-/***************************************************************/
 /*                      VoIP Proxy Main Menu         */
 /***************************************************************/
 void voip_main_ui() {
-        clear_screen();
-        printf("Menu:\n");
-        printf("1. Register Phone to Profile\n");
-        printf("2. Unregister Phone from Profile\n");
-        printf("3. Quit\n");
-        printf("Please enter your choice: ");
-        fflush(stdout);
+        clear();
+        mvprintw(0, 0, "Menu:");
+        mvprintw(1, 0, "1. Register Phone to Profile");
+        mvprintw(2, 0, "2. Unregister Phone from Profile");
+        mvprintw(3, 0, "3. Quit");
+        mvprintw(4, 0, "Please enter your choice: ");
+        refresh();
 }
 /***************************************************************/
 /*                      Create VoIP Profile Function           */
 /***************************************************************/
 
 void create_profile_sip() {
-    clear_screen();
-    printf("\nEnter SIP URI: ");
-    fflush(stdout);
-    scanf("%99s", Sip_User_Profile.sip_uri);
-    /*
-    fgets(sip_uri, sizeof(sip_uri), stdin);
-    sip_uri[strcspn(sip_uri, "\n")] = '\0'; 
-*/
-    printf("\nEnter SIP user: ");
-    fflush(stdout);
-    scanf("%99s", Sip_User_Profile.sip_user);
+    clear(); // Clear the screen
 
-    /*
-    fgets(sip_user, sizeof(sip_user), stdin);
-    sip_user[strcspn(sip_user, "\n")] = '\0';  
-*/
-    printf("\nEnter SIP password: ");
-    fflush(stdout);
-    scanf("%99s", Sip_User_Profile.sip_password);
-    /*
-    fgets(sip_password, sizeof(sip_password), stdin);
-    sip_password[strcspn(sip_password, "\n")] = '\0';
-*/
-    printf("\nEnter SIP Authentication Realm (Default: asterisk): ");
-    fflush(stdout);
-    scanf("%99s", Sip_User_Profile.sip_realm);
-    /*
-    fgets(sip_realm, sizeof(sip_realm), stdin);
-    sip_realm[strcspn(sip_realm, "\n")] = '\0';
-    */ 
-   Sip_User_Profile.dialed_number = 0;
-   clear_screen();
+    mvprintw(0, 0, "Enter SIP URI: ");
+    refresh();
+    char sip_uri[100];
+    scanw("%99s", sip_uri);
+
+    mvprintw(1, 0, "Enter SIP user: ");
+    refresh();
+    char sip_user[100];
+    scanw("%99s", sip_user);
+
+    mvprintw(2, 0, "Enter SIP password: ");
+    refresh();
+    char sip_password[100];
+    scanw("%99s", sip_password);
+
+    mvprintw(3, 0, "Enter SIP Authentication Realm (Default: asterisk): ");
+    refresh();
+    char sip_realm[100];
+    scanw("%99s", sip_realm);
+
+    refresh();
 }
 /********************************************************************************/
 /*                      VoIP Proxy Process Launch                               */
@@ -231,33 +216,37 @@ void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is numbe
 /********************************************************************************/
 void* voip_main()
 {
-/********************************************************************************/
-/*                      Menu Select - Basic or VoIP                             */
-/********************************************************************************/    bool quit = false;
+    bool quit = false;
     int MenuChoice;
+    initscr();
+    raw();
     while (!quit) {
     voip_main_ui();
 
-    scanf("%d", &MenuChoice);
+    scanw("%d", &MenuChoice);
 
     switch (MenuChoice) {
         case 1:
-            printf("Register Phone to Profile selected.\n");
+            mvprintw(5, 0, "Register Phone to Profile selected.");
+            refresh();
             create_profile_sip();
             // Create an instance of the ThreadArgs structure and set the values
             pthread_t th2;
             pthread_create(&th2, NULL, (void* (*)(void*))VoIP_Bridge, (void*) &Sip_User_Profile);
             break;
         case 2:
-            printf("Unregister Phone from Profile selected.Curently does nothing.\n");
+            mvprintw(5, 0, "Unregister Phone from Profile selected. Currently does nothing.");
+            refresh();
             // Call the function for unregistering the phone from the profile
             break;
         case 3:
-            printf("Quitting\n");
+            mvprintw(5, 0, "Quitting");
+            refresh();
             quit = true;
             break;
         default:
-            printf("Invalid choice. Please try again.\n");
+            mvprintw(5, 0, "Invalid choice. Please try again.");
+            refresh();
             break;
     }
     while ((getchar()) != '\n');
