@@ -109,7 +109,6 @@ void startMenu() {
         case 1:
             mvprintw(4, 0, "Normal Mode Selected\n");
             noecho();
-            // Call the function for registering the phone to the profile
             break;
         case 2:
             mvprintw(4, 0, "VoIP Proxy Bridge Mode Starting..............\n");
@@ -121,6 +120,7 @@ void startMenu() {
             mvprintw(4, 0, "Invalid choice. Please try again.\n");
             break;
     }
+    return;
 }
 /***************************************************************/
 /*                      Helpful Functions                 */
@@ -510,7 +510,7 @@ int main() {
     if (!logfile) {
         errx(1, "Logfile open failed\n");
     }
-
+    clear();
     fprintf(logfile, "DNVT Start\n");
     int init = libusb_init(NULL); // NULL is the default libusb_context
     int config;
@@ -574,7 +574,6 @@ int main() {
     pthread_create(&th1, NULL, usb_worker, (void*) NULL);
     while (!quit && thread_run) {			/* Start curses mode 		  */
     startMenu(); /*          Menu Select - Basic or VoIP                */
-    while ((getchar()) != '\n');
         int row, col;
         getmaxyx(stdscr,row,col);
         clear();
