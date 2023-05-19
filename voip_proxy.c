@@ -27,23 +27,22 @@ void create_profile_sip() {
 
     mvprintw(0, 0, "Enter SIP URI: ");
     refresh();
-    char sip_uri[100];
-    scanw("%99s", sip_uri);
+    
+    scanw("%99s", Sip_User_Profile.sip_uri);
 
     mvprintw(1, 0, "Enter SIP user: ");
     refresh();
-    char sip_user[100];
-    scanw("%99s", sip_user);
+    
+    scanw("%99s", Sip_User_Profile.sip_user);
 
     mvprintw(2, 0, "Enter SIP password: ");
     refresh();
-    char sip_password[100];
-    scanw("%99s", sip_password);
+   
+    scanw("%99s", Sip_User_Profile.sip_password);
 
     mvprintw(3, 0, "Enter SIP Authentication Realm (Default: asterisk): ");
     refresh();
-    char sip_realm[100];
-    scanw("%99s", sip_realm);
+    scanw("%99s", Sip_User_Profile.sip_realm);
 
     refresh();
 }

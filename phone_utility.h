@@ -12,6 +12,7 @@
 #include "sip_profile.h"
 #include <pthread.h>
 #include <stdbool.h>
+#include <ncurses.h>
 
 
 int* main();

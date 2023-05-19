@@ -31,7 +31,7 @@
             "name": "Debug Register Phone",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/phone_reg_utility",
+            "program": "${workspaceFolder}/phone_utility",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
