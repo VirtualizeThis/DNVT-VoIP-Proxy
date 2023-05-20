@@ -558,8 +558,8 @@ int main() {
     timeout(10000);
     pthread_t th1;
     pthread_create(&th1, NULL, usb_worker, (void*) NULL);
-    while (!quit && thread_run) {			/* Start curses mode 		  */
     startMenu(); /*          Menu Select - Basic or VoIP                */
+    while (!quit && thread_run) {			/* Start curses mode 		  */
         int row, col;
         getmaxyx(stdscr,row,col);
         clear();

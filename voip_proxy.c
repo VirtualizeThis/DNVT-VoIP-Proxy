@@ -205,22 +205,23 @@ void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is numbe
         /***********************************/
         /* Call Number when dialed on DNVT */
         /***********************************/
-        /*
+        
+        pthread_mutex_lock(&phone.mutex);
+        
+        
         char numberDialed[15];
         snprintf(numberDialed, sizeof(numberDialed), "%d", phone.digit_count);
         const pj_str_t pj_numberDialed = pj_str(numberDialed);
         if (phone.digit_count > 0) {
+        pthread_mutex_unlock(&phone.mutex);
         status = pjsua_call_make_call(acc_id, &pj_numberDialed, 0, NULL, NULL, NULL);
         if (status != PJ_SUCCESS) {
             error_exit("Error making call", status);
         }
         }
-
-        pthread_mutex_lock(&phone.mutex);
-        // Read or modify myStruct->data
-        pthread_mutex_unlock(&phone.mutex);
-
-        pthread_exit(NULL); */
+        if (voip_thread_run == false) {
+        pthread_exit(NULL);
+        }
         /***********************************/
     }
 }
