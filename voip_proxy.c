@@ -289,7 +289,7 @@ void* voip_main(PHONE* phone)
     raw();
     while(!quit) {
     voip_main_ui();
-    pthread_join(th2, NULL);
+    
     }
     noecho();
 /********************************************************************************/    
