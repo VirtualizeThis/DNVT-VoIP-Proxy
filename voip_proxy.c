@@ -4,20 +4,10 @@
 #include "sip_profile.h"
 
 struct Sip_Profile_Args Sip_User_Profile;
+bool quit = false;
+bool voip_thread_run = true;
+pthread_t th2;
 
-/***************************************************************/
-/*                      VoIP Proxy Main Menu         */
-/***************************************************************/
-void voip_main_ui() {
-        clear();
-        echo();
-        mvprintw(0, 0, "Menu:");
-        mvprintw(1, 0, "1. Register Phone to Profile");
-        mvprintw(2, 0, "2. Unregister Phone from Profile");
-        mvprintw(3, 0, "3. Quit");
-        mvprintw(4, 0, "Please enter your choice: ");
-        refresh();
-}
 /***************************************************************/
 /*                      Create VoIP Profile Function           */
 /***************************************************************/
@@ -65,7 +55,8 @@ void create_profile_sip() {
 /********************************************************************************/
 static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
 {
-   pj_status_t status;
+    PHONE phone;
+    pj_status_t status;
     status = pj_log_init();
     pj_log_set_level(5); // Set max log level
     
@@ -141,6 +132,8 @@ static void error_exit(const char *title, pj_status_t status)
  */ 
 void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is number to call?, sip_uri is URI
 {
+    PHONE phone;
+    
     pjsua_acc_id acc_id;
     pj_status_t status;
 
@@ -208,22 +201,49 @@ void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is numbe
 
         status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
         if (status != PJ_SUCCESS) error_exit("Error adding account", status);
-    }
-    return 0;
-}
-/********************************************************************************/
-/*                          Core Process                                      */
-/********************************************************************************/
-void* voip_main()
-{
-    bool quit = false;
-    int MenuChoice;
-    initscr();
-    raw();
-    while (!quit) {
-    voip_main_ui();
 
-    scanw("%d", &MenuChoice);
+        /***********************************/
+        /* Call Number when dialed on DNVT */
+        /***********************************/
+        /*
+        char numberDialed[15];
+        snprintf(numberDialed, sizeof(numberDialed), "%d", phone.digit_count);
+        const pj_str_t pj_numberDialed = pj_str(numberDialed);
+        if (phone.digit_count > 0) {
+        status = pjsua_call_make_call(acc_id, &pj_numberDialed, 0, NULL, NULL, NULL);
+        if (status != PJ_SUCCESS) {
+            error_exit("Error making call", status);
+        }
+        }
+
+        pthread_mutex_lock(&phone.mutex);
+        // Read or modify myStruct->data
+        pthread_mutex_unlock(&phone.mutex);
+
+        pthread_exit(NULL); */
+        /***********************************/
+    }
+}
+
+/***************************************************************/
+/***************************************************************/
+/*                      VoIP Proxy Main Menu         */
+/***************************************************************/
+void voip_main_ui() {
+        int MenuChoice;
+        
+        clear();
+        
+        echo();
+        mvprintw(0, 0, "Menu:");
+        mvprintw(1, 0, "1. Register Phone to Profile");
+        mvprintw(2, 0, "2. Unregister Phone from Profile");
+        mvprintw(3, 0, "3. Status Dashboard");
+        mvprintw(4, 0, "4. Quit");
+        mvprintw(5, 0, "Please enter your choice: ");
+        refresh();
+        
+        scanw("%d", &MenuChoice);
 
     switch (MenuChoice) {
         case 1:
@@ -231,28 +251,46 @@ void* voip_main()
             refresh();
             create_profile_sip();
             // Create an instance of the ThreadArgs structure and set the values
-            pthread_t th2;
             pthread_create(&th2, NULL, (void* (*)(void*))VoIP_Bridge, (void*) &Sip_User_Profile);
+            MenuChoice = -1;
             break;
         case 2:
             mvprintw(5, 0, "Unregister Phone from Profile selected. Currently does nothing.");
+            MenuChoice = -1;
+            exit(0);
             refresh();
             // Call the function for unregistering the phone from the profile
             break;
         case 3:
             mvprintw(5, 0, "Quitting");
             refresh();
-            quit = true;
+            voip_thread_run = false;
+            exit(0);
+            break;
+        case 4:
+            mvprintw(5, 0, "Quitting");
+            refresh();
+            voip_thread_run = false;
+            exit(0);
             break;
         default:
             mvprintw(5, 0, "Invalid choice. Please try again.");
             refresh();
             break;
     }
-    noecho();
-    while ((getchar()) != '\n');
-    }
+}
 /********************************************************************************/
-    pjsua_destroy();
+/*                          Core Process                                      */
+/********************************************************************************/
+void* voip_main(PHONE* phone)
+{
+    initscr();
+    raw();
+    while(!quit) {
+    voip_main_ui();
+    pthread_join(th2, NULL);
+    }
+    noecho();
+/********************************************************************************/    
 return 0;
 }

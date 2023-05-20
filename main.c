@@ -24,10 +24,6 @@
 #define DNVT_REBOOT_FIRMWARE 0xff
 #define SETUP_INPUT 0x1 << 7
 
-typedef struct {
-    uint32_t data[20];
-    uint8_t size;
-} QUEUE;
 
 enum line_state {
     line_uninitialized = 0,
@@ -43,28 +39,11 @@ enum line_state {
 };
 
 #define NOT_CONNECTED 0xFFFF
-
-
-typedef struct {
-    char digits[20];
-    uint8_t digit_count;
-    uint8_t state;
-    uint8_t connected_phone;
-    QUEUE rxd;
-    QUEUE txd;
-    uint8_t pending_command;
-    uint8_t line_state;
-    uint16_t connected_device;
-    uint32_t recording_index;
-    bool playing_recording;
-    int recording_number;
-    struct timespec last_tx;
-} PHONE;
-
 typedef struct {
     uint32_t *data;
     uint32_t length;
 } RECORDING;
+
 
 #define DIALTONE_RECORDING 0
 #define BUSY_RECORDING 1
@@ -86,6 +65,7 @@ FILE *logfile;
 #define MAX_PHONES 4*MAX_SWITCHES
 
 PHONE phones[MAX_PHONES];
+PHONE phone;
 struct libusb_device_handle *dnvt_sw[MAX_SWITCHES];
 unsigned char dev_serials[MAX_SWITCHES][20];
 int open_devices = 0;
@@ -102,7 +82,8 @@ void startMenu() {
     mvaddstr(0, 0, "Choose Mode:");
     mvprintw(1, 0, "1. Standard Mode");
     mvprintw(2, 0, "2. VoIP Proxy Mode");
-    mvprintw(3, 0, "Please enter your choice: ");
+    mvprintw(3, 0, "3. Quit");
+    mvprintw(4, 0, "Please enter your choice: ");
     flushinp();
     scanw("%d", &startMenuchoice);
         switch (startMenuchoice) {
@@ -113,8 +94,12 @@ void startMenu() {
         case 2:
             mvprintw(4, 0, "VoIP Proxy Bridge Mode Starting..............\n");
             noecho();
-            voip_main(); // Call VoIP Main Menu Function
-            quit = true;
+            voip_main(&phone); // Call VoIP Main Menu Function
+            exit(0);
+        case 3:
+            mvprintw(4, 0, "Quitting..............\n");
+            noecho();
+            exit(0);
             break;
         default:
             mvprintw(4, 0, "Invalid choice. Please try again.\n");
@@ -207,6 +192,7 @@ void add_ms(struct timespec *ts, int ms) {
 
 void sync_line_state(int i) {
     PHONE *phone = phones + i;
+    pthread_mutex_init(&phone->mutex, NULL); /* Add mutex function*/
     PHONE *connected_phone;
     if (phone->playing_recording) {
         int recording_number = phone->recording_number;
@@ -371,7 +357,7 @@ void sync_line_state(int i) {
             }
             break;
     }
-
+/* pthread_mutex_destroy(PHONE phone.mutex); /* mutex stuff*/
 }
 
 void* usb_worker(void *unused) {
