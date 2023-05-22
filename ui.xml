@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkWindow" id="window">
+    <property name="child">
+      <object class="GtkBox" id="vBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="title_bar">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="title_bar_data">
+                <property name="margin-bottom">10</property>
+                <property name="label" translatable="1">DNVT Console GUI</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkGrid" id="main_grid">
+            <property name="vexpand">1</property>
+            <child>
+              <object class="GtkBox" id="function_buttons">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkBox" id="upper_left_action_buttons">
+                    <property name="vexpand">1</property>
+                    <property name="halign">start</property>
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">15</property>
+                    <property name="margin-bottom">18</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkButton" id="reg_endpoint_button">
+                        <property name="label" translatable="1">Register Endpoint</property>
+                        <property name="focusable">1</property>
+                        <property name="receives-default">1</property>
+                        <property name="margin-bottom">20</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="unreg_endpoint_button">
+                        <property name="label" translatable="1">Unregister Endpoint</property>
+                        <property name="focusable">1</property>
+                        <property name="receives-default">1</property>
+                        <property name="margin-bottom">20</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="quit">
+                        <property name="label" translatable="1">Shutdown &amp; Exit</property>
+                        <property name="focusable">1</property>
+                        <property name="receives-default">1</property>
+                        <property name="margin-top">171</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                  <property name="row-span">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="RAW_Console_Data">
+                <property name="margin-start">20</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel" id="you_have_r">
+                    <property name="margin-bottom">10</property>
+                    <property name="label" translatable="1">&quot;You have r: %d, c: %d&quot;</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkGrid" id="raw_data_grid">
+                    <property name="vexpand">1</property>
+                    <property name="margin-start">81</property>
+                    <child>
+                      <object class="GtkLabel" id="phone_one">
+                        <property name="margin-start">20</property>
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">Phone One : </property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two">
+                        <property name="margin-start">20</property>
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">Phone Two : </property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three">
+                        <property name="margin-start">20</property>
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">Phone Three : </property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four_x">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_four_x</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four_l">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">L : </property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three_nn">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">N : </property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two_nn">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">N : </property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_one_y">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_one_y</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_one_l">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">L : </property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two_y">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_two_y</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two_l">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">L : </property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three_y">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_three_y</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_one_nn">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">N : </property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_one_x">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_one_x</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two_x">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_two_x</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three_x">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_three_x</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three_l">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">L : </property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four_nn">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">N : </property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four_y">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_four_y</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four">
+                        <property name="margin-start">20</property>
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">Phone Four : </property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_one_n">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_one_n</property>
+                        <layout>
+                          <property name="column">5</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two_n">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_two_n</property>
+                        <layout>
+                          <property name="column">5</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three_n">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_three_n</property>
+                        <layout>
+                          <property name="column">5</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four_n">
+                        <property name="margin-end">20</property>
+                        <property name="label" translatable="1">phone_four_n</property>
+                        <layout>
+                          <property name="column">5</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four_rr">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">R : </property>
+                        <layout>
+                          <property name="column">6</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three_rr">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">R : </property>
+                        <layout>
+                          <property name="column">6</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two_rr">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">R : </property>
+                        <layout>
+                          <property name="column">6</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_one_rr">
+                        <property name="margin-end">5</property>
+                        <property name="label" translatable="1">R : </property>
+                        <layout>
+                          <property name="column">6</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_one_r">
+                        <property name="label" translatable="1">phone_one_r</property>
+                        <layout>
+                          <property name="column">7</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_two_r">
+                        <property name="label" translatable="1">phone_two_r</property>
+                        <layout>
+                          <property name="column">7</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_three_r">
+                        <property name="label" translatable="1">phone_three_r</property>
+                        <layout>
+                          <property name="column">7</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="phone_four_r">
+                        <property name="label" translatable="1">phone_four_r</property>
+                        <layout>
+                          <property name="column">7</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="voip_endpoint_status_label">
+                <property name="valign">start</property>
+                <property name="margin-start">164</property>
+                <property name="margin-top">21</property>
+                <property name="margin-bottom">5</property>
+                <property name="label" translatable="1">VoIP Endpoint Status Label</property>
+                <property name="justify">right</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkGrid" id="voip_status_data">
+                <property name="margin-end">39</property>
+                <property name="margin-end">39</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">13</property>
+                <child>
+                  <object class="GtkLabel" id="endpoint_two_reg_bool">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_two_reg_bool</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="blank_space_one">
+                    <property name="margin-bottom">5</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="is_registered">
+                    <property name="label" translatable="1">Registered</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_one_is_registered_bool">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_one_is_registered_bool</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="sip_profile_username">
+                    <property name="label" translatable="1">SIP Username</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="sip_server">
+                    <property name="label" translatable="1">SIP Server</property>
+                    <layout>
+                      <property name="column">3</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="dnvt_endpoint_one_label">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="margin-bottom">5</property>
+                    <property name="label" translatable="1">DNVT Endpoint One</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="dnvt_endpoint_three_label1">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="margin-bottom">5</property>
+                    <property name="label" translatable="1">DNVT Endpoint Three</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">3</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="dnvt_endpoint_four_label">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="margin-bottom">5</property>
+                    <property name="label" translatable="1">DNVT Endpoint Four</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">4</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_one_registered_user">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_one_registered_user</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="dnvt_endpoint_two_label">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="margin-bottom">5</property>
+                    <property name="label" translatable="1">DNVT Endpoint Two</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_three_is_registered_bool">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_three_is_registered_bool</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">3</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_two_registered_user">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_two_registered_user</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_three_registered_user">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_three_registered_user</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">3</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_four_registered_user">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_four_registered_user</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">4</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_one_registered_sip_server">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_one_registered_sip_server</property>
+                    <layout>
+                      <property name="column">3</property>
+                      <property name="row">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_two_registered_sip_server">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_two_registered_sip_server</property>
+                    <layout>
+                      <property name="column">3</property>
+                      <property name="row">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_three_registered_sip_server">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_three_registered_sip_server</property>
+                    <layout>
+                      <property name="column">3</property>
+                      <property name="row">3</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_four_registered_sip_server">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_four_registered_sip_server</property>
+                    <layout>
+                      <property name="column">3</property>
+                      <property name="row">4</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="endpoint_four_is_registered_bool">
+                    <property name="margin-start">20</property>
+                    <property name="margin-end">20</property>
+                    <property name="label" translatable="1">endpoint_four_is_registered_bool</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">4</property>
+                    </layout>
+                  </object>
+                </child>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </object>
+</interface>

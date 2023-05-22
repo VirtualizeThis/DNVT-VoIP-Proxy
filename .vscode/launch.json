@@ -57,7 +57,7 @@
             "name": "Debug Test",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/test",
+            "program": "${workspaceFolder}/gui",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
