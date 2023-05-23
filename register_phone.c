@@ -82,23 +82,21 @@ void register_and_dial_func(struct Sip_Profile_Args Sip_Profile) //dialed_number
     status = pjsua_create();
     if (status != PJ_SUCCESS) error_exit("Error in pjsua_create()", status);
 
-    /* If argument is specified, it's got to be a valid SIP URL */
-    if (Sip_Profile.dialed_number > 1) {
-        // Create a pj_str_t object from the SIP URI
-    }
-
     /* Init pjsua */
     {
         pjsua_config cfg;
         pjsua_logging_config log_cfg;
 
         pjsua_config_default(&cfg);
+        
         cfg.cb.on_incoming_call = &on_incoming_call;
         cfg.cb.on_call_media_state = &on_call_media_state;
         cfg.cb.on_call_state = &on_call_state;
 
         pjsua_logging_config_default(&log_cfg);
         log_cfg.console_level = 4;
+        log_cfg.log_filename = pj_str("pj_logfile_mclogfile.log");
+
 
         status = pjsua_init(&cfg, &log_cfg, NULL);
         if (status != PJ_SUCCESS) error_exit("Error in pjsua_init()", status);
@@ -142,11 +140,21 @@ void register_and_dial_func(struct Sip_Profile_Args Sip_Profile) //dialed_number
 
         status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
         if (status != PJ_SUCCESS) error_exit("Error adding account", status);
+
+        /* If argument is specified, it's got to be a valid SIP URL */
+        if (Sip_Profile.dialed_number > 0) {
+        char dialed_number_str[32]; // Assuming the maximum length of the string representation
+        // Convert the integer to a string
+        sprintf(dialed_number_str, "%d", Sip_Profile.dialed_number);
+        pj_str_t pj_dialed_number = pj_str(dialed_number_str);
+        status = pjsua_call_make_call(acc_id, &pj_dialed_number, 0, NULL, NULL, NULL);
+        if (status != PJ_SUCCESS) {
+            error_exit("Error making call", status);
+            sleep(100);
+        }
+        }
+        
     }
-
-    printf("Press ENTER key to Continue\n");  
-    getchar();  
-
     /* Destroy pjsua */
     pjsua_destroy();
 }

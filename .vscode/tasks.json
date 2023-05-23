@@ -7,7 +7,6 @@
             "command": "/usr/bin/gcc",
             "args": [
                 "main.c",
-                "register_phone.c",
                 "voip_proxy.c",
                 "-lrt",
                 "-g",

@@ -12,7 +12,6 @@ struct Sip_Profile_Args Sip_User_Profile;
 
 void Get_SIP_User_Profile() {
 
-    Sip_User_Profile.dialed_number = 0; //Dial Number is hard disabled here with 0
     clear();
     echo();
     mvprintw(0, 0, "Enter SIP URI: ");
@@ -26,10 +25,15 @@ void Get_SIP_User_Profile() {
     
     mvprintw(3, 0, "Enter SIP Authentication Realm (Default: asterisk): ");
     getstr(Sip_User_Profile.sip_realm);
+
+    mvprintw(4, 0, "Enter Number to Dial (Zero for Register Only): ");
+    refresh();
+    mvscanw(4, 47, "%d", &Sip_User_Profile.dialed_number);
+
     clear();
     refresh();
     noecho();
-
+    
     register_and_dial_func(Sip_User_Profile);
 }
 /***************************************************************/
