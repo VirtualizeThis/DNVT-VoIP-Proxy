@@ -137,6 +137,11 @@ void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is numbe
     pjsua_acc_id acc_id;
     pj_status_t status;
 
+    pjsua_logging_config log_cfg;
+    pjsua_logging_config_default(&log_cfg);
+    log_cfg.console_level = 4;
+    log_cfg.log_filename = pj_str("pj_log_main.log");
+    
     /* Create pjsua first! */
     status = pjsua_create();
     if (status != PJ_SUCCESS) error_exit("Error in pjsua_create()", status);
@@ -149,15 +154,11 @@ void* VoIP_Bridge(struct Sip_Profile_Args* Sip_Profile) //dialed_number is numbe
     /* Init pjsua */
     {
         pjsua_config cfg;
-        pjsua_logging_config log_cfg;
 
         pjsua_config_default(&cfg);
         cfg.cb.on_incoming_call = &on_incoming_call;
         cfg.cb.on_call_media_state = &on_call_media_state;
         cfg.cb.on_call_state = &on_call_state;
-
-        pjsua_logging_config_default(&log_cfg);
-        log_cfg.console_level = 4;
 
         status = pjsua_init(&cfg, &log_cfg, NULL);
         if (status != PJ_SUCCESS) error_exit("Error in pjsua_init()", status);

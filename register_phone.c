@@ -95,7 +95,7 @@ void register_and_dial_func(struct Sip_Profile_Args Sip_Profile) //dialed_number
 
         pjsua_logging_config_default(&log_cfg);
         log_cfg.console_level = 4;
-        log_cfg.log_filename = pj_str("pj_logfile_mclogfile.log");
+        log_cfg.log_filename = pj_str("pj_log_phone_utility.log");
 
 
         status = pjsua_init(&cfg, &log_cfg, NULL);
